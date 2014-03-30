@@ -1,0 +1,31 @@
+{
+  "name": "hopper",
+  "version": "0.0.0",
+  "description": "brown u. cs132 spr 2014 final project",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pqhwan/hopper.git"
+  },
+  "keywords": [
+    "party-finder",
+    "party",
+    "hopping",
+    "party"
+  ],
+  "author": "pete kim, tom nguyen, alvin tin, john ensley",
+  "license": "none yet",
+  "bugs": {
+    "url": "https://github.com/pqhwan/hopper/issues"
+  },
+  "homepage": "https://github.com/pqhwan/hopper",
+  "dependencies": {
+    "express": "~3.5.1",
+    "colors": "~0.6.2",
+    "pg": "~2.11.1",
+    "hogan-express": "~0.5.2"
+  }
+}
