@@ -30,6 +30,21 @@
      })();
 
     </script>
+    <!-- Scripts for the google maps API -->
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpiPiuq-tWzIRjRtYCFow5LY8YpRXMmk&sensor=false">
+    </script>
+    <script type="text/javascript">
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng(41.8262, -71.4032),
+          zoom: 16
+        };
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+          mapOptions);
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
   </head>
   <body>
     <script src="../assets/js/bsa.js"></script>
@@ -86,9 +101,7 @@
           </div>
         </div>
         <div class="container" style="width=100%; margin:0 auto;">
-        </br>
-        <center><img src="./map.jpg" width="340px"></center>
-        </br>
+          <div id="map-canvas" style="height: 380px"/>
         </div>
       </div>
 
