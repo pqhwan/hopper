@@ -31,7 +31,7 @@
 
     </script>
   </head>
-  <body style="background-color: #eedddd">
+  <body style="background-color: #eeeeee">
     <script src="../assets/js/bsa.js"></script>
 
     <div class="navbar navbar-default navbar-fixed-top" style="height: 61px;">
@@ -54,7 +54,7 @@
               <li>
 
               <button type="button" class="btn btn-default btn-lg">
-                <i class="fa fa-arrow-circle-left" style="font-size:30px;"></i>
+                <a href="./main.html" style="color:#ffffff;"><i class="fa fa-arrow-circle-left" style="font-size:30px;"></i></a>
               </button>
               </li>
             </ul>
@@ -62,29 +62,36 @@
       </div>
     </div>
 
-    <div class="container" style="padding-top: 100px">
+    <div class="container" style="padding-top: 90px">
         <div class="row">
 
           <div class="col-lg-6 col-lg-offset-3">
           <div class="form-group">
-            <input type="email" class="form-control" id="username" placeholder="USERNAME">
-          </div>
-          <div class="form-group">
-            <input type="password" class="form-control" id="password" placeholder="PASSWORD"></br>
-          </div>
-          </div>        
-          
-          <div class="col-lg-6 col-lg-offset-3">
-          <p class="bs-component">
-              <a href="./main.html"><button type="button" class="btn btn-primary btn-lg btn-block"><font size="3">GO &raquo;</font></button></a>
-          </p>
+            <label for="partyname" style="color:#000000;">Party Name</label>
+            <input type="text" class="form-control" id="partyname" placeholder="ex: Birthday Party">
           </div>
 
-          <div class="col-lg-6 col-lg-offset-3">
-          <p class="bs-component">
-              <button type="button" class="btn btn-primary btn-lg btn-block" style="background-color: #3B5998"><font size="3">LOGIN WITH FACEBOOK &raquo;</font></button>
-          </p>
+          <div class="form-group">
+            <label for="partyname" style="color:#000000;">Details</label>
+            <input type="text" class="form-control" id="partyname" placeholder="Add more info">
           </div>
+
+          <div class="form-group">
+            <label for="partyname" style="color:#000000;">Address</label>
+            <input type="text" class="form-control" id="partyname" placeholder="75 Waterman St, Providence, RI">
+          </div>  
+
+          <div class="form-group">
+            <label for="partyname" style="color:#000000;">When</label>
+            <input type="datetime-local" class="form-control" id="partyname"></br>
+            <input type="datetime-local" class="form-control" id="partyname">
+          </div>     
+          <br>
+          <div>
+          <p class="bs-component">
+              <a href="./main.html"><button type="button" class="btn btn-primary btn-lg btn-block"><font size="3">SUBMIT &raquo;</font></button></a>
+          </p>
+          
 
         </div>
       </footer>

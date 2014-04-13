@@ -30,8 +30,14 @@
      })();
 
     </script>
+    <style type="text/css">
+         .form-group p{
+          color: #000000;
+          font-size: 18px;
+         }
+    </style>
   </head>
-  <body style="background-color: #eedddd">
+  <body style="background-color: #eeeeee">
     <script src="../assets/js/bsa.js"></script>
 
     <div class="navbar navbar-default navbar-fixed-top" style="height: 61px;">
@@ -54,7 +60,7 @@
               <li>
 
               <button type="button" class="btn btn-default btn-lg">
-                <i class="fa fa-arrow-circle-left" style="font-size:30px;"></i>
+                <a href="./main.html" style="color:#ffffff;"><i class="fa fa-arrow-circle-left" style="font-size:30px;"></i></a>
               </button>
               </li>
             </ul>
@@ -62,33 +68,38 @@
       </div>
     </div>
 
-    <div class="container" style="padding-top: 100px">
+    <div class="container" style="padding-top: 90px">
         <div class="row">
 
           <div class="col-lg-6 col-lg-offset-3">
           <div class="form-group">
-            <input type="email" class="form-control" id="username" placeholder="USERNAME">
-          </div>
-          <div class="form-group">
-            <input type="password" class="form-control" id="password" placeholder="PASSWORD"></br>
-          </div>
-          </div>        
-          
-          <div class="col-lg-6 col-lg-offset-3">
-          <p class="bs-component">
-              <a href="./main.html"><button type="button" class="btn btn-primary btn-lg btn-block"><font size="3">GO &raquo;</font></button></a>
-          </p>
-          </div>
+            <label for="partyname" style="color:#000000; font-weight:700;">Party Name</label>
+            <p>TURNDOWNFORWHAT</p>
+          <br>
+            <label for="partydetails" style="color:#000000; font-weight:700;">Details</label>
+            <p>Set in the distant future amidst a feudal interstellar society in which noble houses, in control of individual planets, owe allegiance to the Padishah Emperor, Dune tells the story of young Paul Atreides, whose noble family accepts the stewardship of the desert planet Arrakis. As this planet is the only source of the "spice" melange, the most important and valuable substance in the universe, control of Arrakis is a coveted — and dangerous — undertaking.</p>
 
-          <div class="col-lg-6 col-lg-offset-3">
-          <p class="bs-component">
-              <button type="button" class="btn btn-primary btn-lg btn-block" style="background-color: #3B5998"><font size="3">LOGIN WITH FACEBOOK &raquo;</font></button>
-          </p>
+          <br>
+            <label for="partyaddress" style="color:#000000; font-weight:700;">Address</label>
+            <p>208 Power St, Providence</p>
+          <br> 
+            <label for="partyname" style="color:#000000; font-weight:700;">When</label>
+            <p>4/11/14 10 PM
+            </p>
+            <p>4/12/14 1 AM
+            </p>
+          <br>
           </div>
-
+          <div style="width=100%; text-align:center;">
+          <p>
+              <a href="./main.html"><button type="button" class="btn btn-success btn-lg" style="width:150px; margin:10px;"><font size="3">COOL &raquo;</font></button></a>
+              <a href="./main.html"><button type="button" class="btn btn-danger btn-lg" style="width:150px; margin:10px;"><font size="3">LAME &raquo;</font></button></a>
+          </p>
         </div>
       </footer>
+      </div>
     </div>
+
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>

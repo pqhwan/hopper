@@ -45,28 +45,33 @@
       }
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
+    <style type="text/css">
+         .list-group-item{
+          background-color: #eeeeee;
+         }
+    </style>
   </head>
-  <body>
+  <body style="background-color: #eeeeee">
     <script src="../assets/js/bsa.js"></script>
 
     <div class="navbar navbar-default navbar-fixed-top" style="height: 61px;">
       <div class="container">
-        <div class="navbar-header" style="width:100%;">
+        <div class="navbar-header" style="width:100%; margin: 0 auto;">
 
-          <div class="container" style="position:fixed; text-align:center; width:100%; display:inline-block; padding-left:0; margin:0; left:0;"><a href="./index.html" class="navbar-brand">HOPPER</a></div>
+          <div class="container" style="position:fixed; width:90%; text-align:center; margin:0 auto;"><a href="./index.html" class="navbar-brand">HOPPER</a></div>
 
-          <div class="container" style="margin-right:-0px;">
-             <div class="container" style="float:right; width:50%; margin-right:-65px;">
-             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+             <div class="container" style="float:right; width:50%; margin-right:-27%;">
+             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main" style="position:absolute;">
               <a href="http://bit.ly/1cozwlm" style="text-decoration:none;"><i class="fa fa-users" style="font-size:30px; color:#ffffff;"></i></a>
             </button>
             </div>
-            <div class="container" style="float:left; width:50%; margin-left:-55px; ">
-            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+
+            <div class="container" style="float:left; width:50%;">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main" style="position:absolute;">
               <a href="./settings.html" style="text-decoration:none;"><i class="fa fa-gear" style="font-size:30px; color:#ffffff;"></i></a>
             </button>
             </div>
-          </div>
+
         </div>
 
           <div class="navbar-collapse collapse" id="navbar-main">
@@ -90,34 +95,34 @@
 
     <div class="container" style="width:100%;">
 
-      <div class="page-header" id="banner">
+      <div id="banner" style="margin-top:60px;">
         <div class="row">
           <div class="col-lg-6 col-lg-offset-3">
           </br>
             <p class="bs-component">
-              <button type="button" class="btn btn-primary btn-lg btn-block"><font size="5">POST A PARTY</font></button>
+              <a href="./partyform.html" style="text-decoration:none;"><button type="button" class="btn btn-primary btn-lg btn-block"><font size="5">POST A PARTY</font></button></a>
             </p>
 
           </div>
         </div>
-        <div class="container" style="width=100%; margin:0 auto;">
+        <div class="container" style="width=100%; margin:0 auto; margin-top:20px; margin-bottom:50px;">
           <div id="map-canvas" style="height: 380px"/>
         </div>
       </div>
 
-        <div class="page-header">
-              <ul class="list-group">
+        <div>
+              <ul style="width:100%; margin-bottom:30px; padding:0;">
                 <li class="list-group-item">
                   <a href="#" style="float: right"><span class="badge"><i class="fa fa-sort"></i></span></a>
-                  <font color="black">Cras justo odio</font>
+                  <a href="./partydetails.html"><font color="black">TURNDOWNFORWHAT</font></a>
                 </li>
                 <li class="list-group-item">
                   <a href="#" style="float: right"><span class="badge"><i class="fa fa-sort"></i></span></a>
-                  <font color="black">Dapibus ac facilisis in</font>
+                  <a href="#"><font color="black">Full Metal Jacket Viewing Party</font></a>
                 </li>
                 <li class="list-group-item">
                   <a href="#" style="float: right"><span class="badge"><i class="fa fa-sort"></i></span></a>
-                  <font color="black">Morbi leo risus</font>
+                  <a href="#"><font color="black">Drinking Alone @ the GCB</font></a>
                 </li>
               </ul>
         </div>
