@@ -44,12 +44,12 @@ app.get('/nearby', function(req,res){
 
 //TODO party create form (don't have this yet)
 app.get('/party/create', function(req,res){
-    res.send('party upload form');
+    res.sendfile('partyform.html');
 });
 
 //TODO party profile (don't have this yet)
 app.get('/party/:id',function(req,res){
-
+    res.sendfile('partydetails.html');
 });
 
 
