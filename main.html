@@ -41,8 +41,42 @@
           zoom: 16
         };
         var map = new google.maps.Map(document.getElementById("map-canvas"),
-          mapOptions);
+                mapOptions);
+
+       function placePin(location, map) {
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map,
+                title: "Current location",
+                url: "http://www.google.com"
+            });
+
+            google.maps.event.addListener(marker,'click',function(){
+                window.location.href = this.url;
+            });
+
+
+       } 
+
+       function getLoc(){
+           //hardcoded for now, but should be replaced with
+           //a real location provision code
+            return ["41.827090", "-71.4019211"]
+       }
+
+       var loca = getLoc();
+       placePin(new google.maps.LatLng(
+                   parseFloat(loca[0]),
+                   parseFloat(loca[1])),
+               map);
+
+       //TODO post your location to the server
+       //put received information on the map
+
+
       }
+
+
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
     <style type="text/css">
@@ -132,11 +166,7 @@
       </div>
 
       </footer>
-
-
     </div>
-
-
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <!--<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="../assets/js/bootswatch.js"></script>-->

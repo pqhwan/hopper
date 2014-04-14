@@ -4,6 +4,8 @@ var express = require('express'),
     colors = require('colors').
     pg = require('pg');
 
+var dbconn = process.env.DATABASE_URL || "postgres://nodetest:bigswigmoney@localhost/nodetest";
+
 var app = express();
 
 // environment variables
@@ -35,6 +37,7 @@ app.get('/',function(req,res){
 //TODO signup.html (we don't have this yet)
 app.get('/login',function(req,res){
     res.sendfile('login.html');
+
 }); //send back signup page
 
 //TODO main.html
@@ -61,6 +64,10 @@ app.get('/party/:id',function(req,res){
 app.post('/login',function(req,res){
     //get credentials from req
     //find it in db (callback for directing user to /nearby)
+    pg.connect(dbconn,function(err,clinet,done){
+        console.log('swingin here');
+        if(err) return console.rr('postgresql',err);
+    });
 });
 
 //TODO 
