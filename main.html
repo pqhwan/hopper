@@ -48,14 +48,12 @@
                 position: location,
                 map: map,
                 title: "Current location",
-                url: "http://www.google.com"
+                url: "partydetails.html"
             });
 
             google.maps.event.addListener(marker,'click',function(){
                 window.location.href = this.url;
             });
-
-
        } 
 
        function getLoc(){
@@ -64,11 +62,14 @@
             return ["41.827090", "-71.4019211"]
        }
 
+       function getPartyLoc(){
+           return [["41.828798","-71.400596"]]
+       }
+
        var loca = getLoc();
-       placePin(new google.maps.LatLng(
-                   parseFloat(loca[0]),
-                   parseFloat(loca[1])),
-               map);
+       var party = getPartyLoc()[0];
+       placePin(new google.maps.LatLng(parseFloat(loca[0]),parseFloat(loca[1])), map);
+        placePin(new google.maps.LatLng( parseFloat(party[0]), parseFloat(party[1])), map);
 
        //TODO post your location to the server
        //put received information on the map
