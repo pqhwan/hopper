@@ -84,3 +84,5 @@ app.post('/nearby',function(req,res){
 
 //start app
 app.listen(app.get('port'));
+
+console.log('listening on port '+app.get('port'));
