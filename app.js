@@ -1,60 +1,65 @@
-//Get dependenies
-
 var express = require('express'),
-    colors = require('colors').
-    pg = require('pg');
+    colors = require('colors'),
+    pg = require('pg'),
+    crypto = require('crypto');
 
-var dbconn = process.env.DATABASE_URL || "postgres://nodetest:bigswigmoney@localhost/nodetest";
+var dbconn = process.env.DATABASE_URL || "postgress://petehyunsikkim:whatever@localhost/hopper";
+
+//"postgres://petehyunsikkim:bigswigmoney@localhost/nodetest";
+
+
+//db test run
+/*
+pg.connect(dbconn,function(err,client,done){
+    if(err) console.log(err);
+    console.log('connection success');
+
+    client.query({
+        text:'select * from users'
+    },function(err, result){
+        console.log(result);
+    });
+});
+*/
 
 var app = express();
 
 // environment variables
-app.set('port', process.env.PORT || 3000);
-// smallest middleware in the world
-app.use(function(req,res,next){
-    //console.log(__dirname);
-    next();
-});
-
-
+app.set('port', process.env.PORT || 5000);
+// use root as a static file folder
 app.use(express.static(__dirname));
-//app.use('/assets/css',express.static(__dirname+'/assets/css'));
-//app.use('/assets/js',express.static(__dirname+'/assets/js'));
-//app.use(express.favicon());
-//app.use(express.methodOverride());
-//app.use(app.router);
-
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.cookieParser());
 
 /**
  * Page URLs.
  */
 
-//TODO splash.html
-app.get('/',function(req,res){
+app.get('/', function(req,res){
     res.sendfile('index.html');
 }); 
 
-//TODO signup.html (we don't have this yet)
 app.get('/login',function(req,res){
     res.sendfile('login.html');
+});
 
-}); //send back signup page
+app.get('/signup',function(req,res){
+    res.sendfile('signup.html');
+});
 
-//TODO main.html
 app.get('/nearby', function(req,res){
+    //console.log(req.cookies.hopperCookie);
     res.sendfile('main.html');
 });
 
-//TODO party create form (don't have this yet)
 app.get('/party/create', function(req,res){
     res.sendfile('partyform.html');
 });
 
-//TODO party profile (don't have this yet)
 app.get('/party/:id',function(req,res){
     res.sendfile('partydetails.html');
 });
-
 
 
 /**
@@ -62,24 +67,77 @@ app.get('/party/:id',function(req,res){
  */
 
 app.post('/login',function(req,res){
-    //get credentials from req
-    //find it in db (callback for directing user to /nearby)
-    pg.connect(dbconn,function(err,clinet,done){
-        console.log('swingin here');
-        if(err) return console.rr('postgresql',err);
-    });
+    
+    pwhash = crypto.createHash('md5').update(req.body.password).digest('hex');
+    console.log(req.body.email);
+
+    pg.connect(dbconn,function(err,client,done){
+        if(err) {
+            console.log(err);
+            return;
+        }
+
+        client.query({
+            text:'select * from users where u_email=$1',
+            values:[req.body.email]
+        }, function(err,result){
+           if(err){
+               console.log(err);
+               return;
+           }
+
+           if(!result){
+                res.redirect('/login');
+           }
+
+           if(pwhash === result['rows'][0]['u_pw']){
+                res.cookie('hopperCookie',result['rows'][0]['u_hash'],
+                    {maxAge:900000,httpOnly:true});
+                res.redirect('/nearby');
+           }
+
+            
+        });
+
+    }); 
 });
 
-//TODO 
+
 app.post('/signup',function(req,res){
-    //get credentials from req
-    //store in db
+    pg.connect(dbconn,function(err,client,done){
+        if(err){
+            console.log(err);
+            return;
+        }
+        //create hashes
+        hash = crypto.createHash('md5').update(req.body.username+req.body.email).digest('hex');
+        pwhash = crypto.createHash('md5').update(req.body.password).digest('hex');
+
+        client.query({
+            text:'insert into users values($1,$2,$3,$4)',
+            values:[hash,
+            req.body.username,
+            req.body.email,
+            pwhash
+            ]
+        },function(err,result){
+           if(err) console.log(err);
+        });
+
+    });
+    res.redirect('/login');
 });
 
 //TODO get coordinate, send back nearby parties
 app.post('/nearby',function(req,res){
     //get user coordinate from req
     //store in db
+});
+
+
+app.post('/party/create',function(req,res){
+    console.log(req.body);
+
 });
 
 //start app
