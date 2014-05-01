@@ -61,46 +61,41 @@
        } 
 
        function getLoc(){
-           //hardcoded for now, but should be replaced with
-           //a real location provision code
-           //put a comment
+           //a real location provision code. Right now the geolocation is inaccurate
+           //uses the getCurrentPosition of geolocation to get the longitude and latitude of the users position.
 	    var initialLocation;
-	    console.log('is this called');
 	    if(navigator.geolocation){
-		console.log('hello');
 		navigator.geolocation.getCurrentPosition(function(position){
-		    console.log('world');
 		    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-		    console.log('inside' + initialLocation);
-		    return initialLocation;
+		    //places the pin and centers the map.
+		    placePin(initialLocation, map);
+		    map.setCenter(initialLocation);
 		});
 	    }
-	    
-	    return initialLocation;
-	    console.log('somthing: ' + initialLocation);
-//             return ["41.827090", "-71.4019211"]
-       }
-
-       function showPosition(position){
-	    console.log('print line');
-	    console.log(position.coords.latitude);
-	    console.log(position.coords.longitude);
-	    	
        }
        
        function getPartyLoc(){
-           return [["41.828798","-71.400596"]]
+	    //TODO post your location to the server
+	    var request = new XMLHttpRequest();
+	    request.open('POST', 'http://localhost:5000/nearby', true);
+	    //put received information on the map
+	    request.addEventListener('load', function(){
+		    var content = request.responseText;
+		    var data = JSON.parse(content);
+		    //looping through the list of parties that have been posted
+		    for(var i = 0; i < data.length; i++){
+			var partyLocation = new google.maps.LatLng(data[i].p_coord_x, data[i].p_coord_y);
+			placePin(partyLocation, map);
+		    }
+		    
+	    });
+	    request.send(null);       
        }
 
-       var loca = getLoc();
-       console.log('after loca' + loca);
-       var party = getPartyLoc()[0];
-       placePin(new google.maps.LatLng(parseFloat(loca[0]),parseFloat(loca[1])), map);
-        placePin(new google.maps.LatLng( parseFloat(party[0]), parseFloat(party[1])), map);
-
-       //TODO post your location to the server
-       //put received information on the map
-	
+       getLoc();
+       getPartyLoc();
+       
+//        placePin(new google.maps.LatLng( parseFloat(party[0]), parseFloat(party[1])), map);
 
       }
 
