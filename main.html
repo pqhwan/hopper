@@ -47,12 +47,12 @@
         var map = new google.maps.Map(document.getElementById("map-canvas"),
                 mapOptions);
 
-       function placePin(location, map) {
+       function placePin(location, map, p_hash) {
             var marker = new google.maps.Marker({
                 position: location,
                 map: map,
                 title: "Current location",
-                url: "partydetails.html"
+                url: "/party/"+p_hash
             });
 
             google.maps.event.addListener(marker,'click',function(){
@@ -85,7 +85,7 @@
 		    //looping through the list of parties that have been posted
 		    for(var i = 0; i < data.length; i++){
 			var partyLocation = new google.maps.LatLng(data[i].p_coord_x, data[i].p_coord_y);
-			placePin(partyLocation, map);
+			placePin(partyLocation, map, data[i].p_hash);
 		    }
 		    
 	    });
