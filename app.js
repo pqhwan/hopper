@@ -146,8 +146,9 @@ app.post('/signup',function(req,res){
 //TODO get coordinate, send back nearby parties
 app.post('/nearby',function(req,res){
     //get user coordinate from req
-    //var lat = req.body.lat; NOPE
-    //var lng = req.body.lng;
+//     var lat = req.body.lat;
+//     var lng = req.body.lng;
+    
     var selectPartyQuery = 'select p_coord_x, p_coord_y, p_name, p_description, p_start, p_end, p_upvotes from parties';
     conn.query(selectPartyQuery,function(err,data){
         if(err) throw err;
