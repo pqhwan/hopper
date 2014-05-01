@@ -37,6 +37,7 @@ fs.readFile('db/users.sql',function(err,data){
 });
 
 
+
 //environment variables-----------------------------------------------------------
 app.set('port', process.env.PORT || 5000);
 app.use(express.static(__dirname));
@@ -168,14 +169,14 @@ app.post('/party/create',function(req,res){
     var partyname = req.body.partyname;
     var hostname = req.cookies.u_name;
     var hosthash = req.signedCookies.u_hash;
-    var hash = crypto.createHash('md5').update(hosthash+partyname).digest('hex');
+    var partyhash = crypto.createHash('md5').update(hosthash+partyname).digest('hex');
     var description = req.body.details;
     var start = req.body.start;
     var end = req.body.end;
-
+    var streetAddress = req.body.address;
     var addressQueryString = req.body.address.replace(/ /gi, '+');
    
-    //ask google where this street address is in coordinates
+    //get the coordinate and store the party
     request('http://maps.googleapis.com/maps/api/geocode/json?address='+addressQueryString+'&sensor=false',function(err,response,body){
 
         console.log(req.body);
@@ -185,18 +186,28 @@ app.post('/party/create',function(req,res){
         var coordY = latlng.lng;
     
         //prepare query
-        var partyInsertQuery = "insert into parties values($1,$2,$3,$4,datetime('now','localtime'),$5,$6,$7,$8,$9,0)";
-        var params = [hash,hosthash,hostname,partyname,coordX,coordY,description,start,end];
+        var partyInsertQuery = "insert into parties values($1,$2,$3,$4,datetime('now','localtime'),$5,$6,$7,$8,$9,$10,0)";
+        var params = [partyhash,hosthash,hostname,partyname,coordX,coordY,description,streetAddress, start,end];
 
         //execute query
         conn.query(partyInsertQuery,params,function(err,data){
-            if(err) throw err;
+            if(err){
+            //error message
+                res.send('Redundnat party: <a href="/party/create">RETRY</a>');
+                res.end();
+                return;
+            }
             res.redirect('/nearby');
         });
 
     });
-    
 
+    //register party creation as an activity
+    var insertActivityQuery = "insert into activities values(datetime('now','localtime'), $1, $2, $3, $4,$5,'')";
+    var params = [hosthash,hostname,1,partyhash,partyname];
+    conn.query(insertActivityQuery,params,function(err,data){
+        if(err) throw err;
+    });
 });
 
 //start app

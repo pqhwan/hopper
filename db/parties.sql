@@ -7,6 +7,7 @@ create table if not exists parties(
     p_coord_x float not null,
     p_coord_y float not null,
     p_description varchar(140),
+    p_streeaddress varchar(140),
     p_start timestamp,
     p_end timestamp, 
     p_upvotes smallint
