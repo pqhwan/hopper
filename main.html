@@ -32,8 +32,12 @@
     </script>
     <!-- Scripts for the google maps API -->
     <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpiPiuq-tWzIRjRtYCFow5LY8YpRXMmk&sensor=false">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpiPiuq-tWzIRjRtYCFow5LY8YpRXMmk&sensor=true">
     </script>
+    
+    
+    
+    
     <script type="text/javascript">
       function initialize() {
         var mapOptions = {
@@ -60,27 +64,52 @@
            //hardcoded for now, but should be replaced with
            //a real location provision code
            //put a comment
-            return ["41.827090", "-71.4019211"]
+	    var initialLocation;
+	    console.log('is this called');
+	    if(navigator.geolocation){
+		console.log('hello');
+		navigator.geolocation.getCurrentPosition(function(position){
+		    console.log('world');
+		    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		    console.log('inside' + initialLocation);
+		    return initialLocation;
+		});
+	    }
+	    
+	    return initialLocation;
+	    console.log('somthing: ' + initialLocation);
+//             return ["41.827090", "-71.4019211"]
        }
 
+       function showPosition(position){
+	    console.log('print line');
+	    console.log(position.coords.latitude);
+	    console.log(position.coords.longitude);
+	    	
+       }
+       
        function getPartyLoc(){
            return [["41.828798","-71.400596"]]
        }
 
        var loca = getLoc();
+       console.log('after loca' + loca);
        var party = getPartyLoc()[0];
        placePin(new google.maps.LatLng(parseFloat(loca[0]),parseFloat(loca[1])), map);
         placePin(new google.maps.LatLng( parseFloat(party[0]), parseFloat(party[1])), map);
 
        //TODO post your location to the server
        //put received information on the map
-
+	
 
       }
 
 
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
+    
+    
+    
     <style type="text/css">
          .list-group-item{
           background-color: #eeeeee;
