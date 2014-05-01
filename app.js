@@ -131,20 +131,23 @@ app.post('/signup',function(req,res){
 
     //execute query
     conn.query(signupQuery, params,function(err,data){
-            if(err) throw err;
+            if(err){
+                throw err;
+            } else {
+                //signup success--> now go log yourself in
+                res.redirect('/login');
+            }
+            
         }
     );
-    
-    //success--now go log in
-    res.redirect('/login');
 });
 
 //TODO get coordinate, send back nearby parties
 app.post('/nearby',function(req,res){
     //get user coordinate from req
-    //var lat = req.body.lat;
+    //var lat = req.body.lat; NOPE
     //var lng = req.body.lng;
-    var selectPartyQuery = 'select p_coord_x,p_coord_y,p_name,p_description,p_start,p_end,p_upvotes from parties';
+    var selectPartyQuery = 'select p_coord_x, p_coord_y, p_name, p_description, p_start, p_end, p_upvotes from parties';
     conn.query(selectPartyQuery,function(err,data){
         if(err) throw err;
         //console.log(JSON.stringify(data.rows));
