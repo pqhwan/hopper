@@ -3,6 +3,7 @@ var express = require('express'),
     crypto = require('crypto'),
     fs = require('fs'),
     request = require('request');
+    engines = require('consolidate');
 
 var app = express();
 
@@ -40,6 +41,8 @@ fs.readFile('db/users.sql',function(err,data){
 
 //environment variables-----------------------------------------------------------
 app.set('port', process.env.PORT || 5000);
+app.engine('html',engines.hogan);
+app.set('views',__dirname);
 app.use(express.static(__dirname));
 app.use(express.json());
 app.use(express.urlencoded());
@@ -51,38 +54,85 @@ app.use(function(req,res,next){
 
 //static page URLs-----------------------------------------------------------------------
 app.get('/', function(req,res){
-    //if logged in, forward to /nearby
+    //TODO if logged in, forward to /nearby
     res.sendfile('index.html');
 }); 
 
 app.get('/login',function(req,res){
-    //if logged in, forward to /nearby
+    //TODO if logged in, forward to /nearby
     res.sendfile('login.html');
 });
 
+app.get('/profile/:id',function(req,res){
+    res.sendfile('userprofile.html');
+});
+
 app.get('/signup',function(req,res){
-    //if logged in, forward to /nearby
+    //TODO if logged in, forward to /nearby
     res.sendfile('signup.html');
 });
 
 app.get('/nearby', function(req,res){
-    //if not logged in, forward to /login
-
+    //TODO if not logged in, forward to /login
     res.sendfile('main.html');
 });
 
 app.get('/party/create', function(req,res){
-    //if not logged in, forwrad to /login
+    //TODO if not logged in, forwrad to /login
     res.sendfile('partyform.html');
 });
 
 app.get('/party/:id',function(req,res){
-    //if not logged in, forward to /login
-    res.sendfile('partydetails.html');
+    //TODO if not logged in, forward to /login
+    var partySelectQuery = 'select p_name, p_hostname, p_description, p_streetaddress, p_start, p_end from parties where p_hash=$1';
+    var params = [req.params.id];
+
+    conn.query(partySelectQuery, params, function(err,data){
+        if(err) throw err; //no data, constraint violation?
+
+        if(!data['rowCount']){
+            res.send('no such party: <a href="/nearby">RETRY</a>');
+            res.end();
+            return;
+        }
+
+        var row = data['rows'][0];
+
+        //test how start and end are printed
+        //console.log('start: ' + row.p_start + ' end: '+row.p_end);
+        
+        res.render('partyprofile.html',{
+            partyname:row.p_name,
+            hostname:row.p_hostname,
+            description:row.p_description,
+            streetaddress:row.p_streetaddress,
+            start: row.p_start,
+            end: row.p_end
+        });
+    });
+
 });
 
 
 //Action URLs-------------------------------------------------------------------------
+
+app.get('/party/activities/:id',function(req,res){
+    var findActivitiesByParty = 'select * from activities where a_partyhash=$1';
+    var params = [req.params.id];
+    conn.query(findActivitiesByParty,params,function(err,data){
+        if(err) throw err; 
+
+        if(!data.rowCount){
+            res.send('[]');
+            res.end();
+        }
+
+        var rows = JSON.stringify(data.rows);
+        res.send(rows);
+        res.end();
+    });
+});
+
 
 //login url
 app.post('/login',function(req,res){
@@ -146,8 +196,6 @@ app.post('/signup',function(req,res){
 //TODO get coordinate, send back nearby parties
 app.post('/nearby',function(req,res){
     //get user coordinate from req
-//     var lat = req.body.lat;
-//     var lng = req.body.lng;
     
     var selectPartyQuery = 'select p_coord_x, p_coord_y, p_name, p_description, p_start, p_end, p_upvotes, p_hash from parties';
     conn.query(selectPartyQuery,function(err,data){
@@ -157,6 +205,34 @@ app.post('/nearby',function(req,res){
         res.end();
     });
  
+});
+
+//party upvoted! 
+//1. increment upvotemeter
+//2. register activity
+app.get('/party/upvote/:id',function(req,res){
+    //get upvoter credentials
+    var username = req.cookies.u_name;
+    var userhash = req.signedCookies.u_hash;
+
+    //increment upvotes
+    var incrementQuery = "update parties set p_upvotes=p_upvotes+1 where p_hash=$1";
+    var param = [req.params.id];
+    conn.query(incrementQuery, param,function(err,data){
+        if(err) throw err;
+    });
+
+    var nameQuery = "select p_name from parties where p_hash=$1";
+    conn.query(nameQuery,[req.params.id],function(err,data){
+        var partyname = data.rows[0].p_name;
+        var insertActivityQuery = "insert into activities values(datetime('now','localtime'), $1, $2, $3, $4,$5,'')";
+        var params = [userhash,username,0,req.params.id,partyname];
+        conn.query(insertActivityQuery, params,function(err,data){
+            if(err) throw  err;
+        });
+    });
+
+    res.end();
 });
 
 app.post('/party/create',function(req,res){

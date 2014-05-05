@@ -27,7 +27,50 @@
        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-     })();
+   })();
+
+   function redundancyCheck(when){
+       var children = $('#activities').children();
+       for(i=0;i<children.length;i++){
+           if(when === children[i].id){
+                return true;
+           }
+       }
+       return false;
+   }
+
+    function displayActivities(activities){
+        for(i=0;i<activities.length;i++){
+            var item = activities[i];
+            console.log(item);
+            if(redundancyCheck(item.a_when)){
+                continue;
+            }
+            var action =  item.a_verb? 'created':'upvoted';
+
+            var li = '<li id="'+item.a_when+'" class="list-group-item">'+
+            '<a href="/profile/'+item.a_userhash+'">'+item.a_username+'</a> '+action+ ' this party '+
+            '<p style="float:right;">'+item.a_when+'</p></li>';
+
+            $('#activities').append(li);
+        }
+    }
+    function getActivities(){
+        var request = new XMLHttpRequest();
+        var id = document.URL.slice(document.URL.length-32);
+        request.open('GET','http://localhost:5000/party/activities/'+id);
+        request.addEventListener('load',function(e){
+            if(request.status == 200){
+                displayActivities(JSON.parse(request.responseText));
+            }
+        },false)
+        request.send(null);
+
+    }
+
+   window.setInterval(getActivities, 10000);
+   window.addEventListener('load',getActivities, false);
+
 
     </script>
     <style type="text/css">
@@ -40,16 +83,17 @@
   <body style="background-color: #eeeeee">
       <!--<script src="../assets/js/bsa.js"></script>-->
 
+    <!--navbar-->
     <div class="navbar navbar-default navbar-fixed-top" style="height: 61px;">
       <div class="container">
         <div class="navbar-header" style="width:100%;">
 
-          <div class="container" style="position:fixed; text-align:center; width:100%; display:inline-block; padding:0; margin:0; left:0;"><a href="./main.html" class="navbar-brand">HOPPER</a></div>
+          <div class="container" style="position:fixed; text-align:center; width:100%; display:inline-block; padding:0; margin:0; left:0;"><a href="/nearby" class="navbar-brand">HOPPER</a></div>
 
           <div class="container" style="margin-right:-0px;">
             <div class="container" style="float:left; width:50%; margin-left:-90px; ">
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
-              <a href="./main.html" style="color:#ffffff;"><i class="fa fa-arrow-circle-left" style="font-size:30px;"></i></a>
+              <a href="/nearby" style="color:#ffffff;"><i class="fa fa-arrow-circle-left" style="font-size:30px;"></i></a>
             </button>
             </div>
           </div>
@@ -60,7 +104,7 @@
               <li>
 
               <button type="button" class="btn btn-default btn-lg">
-                <a href="./main.html" style="color:#ffffff;"><i class="fa fa-arrow-circle-left" style="font-size:30px;"></i></a>
+                <a href="/nearby" style="color:#ffffff;"><i class="fa fa-arrow-circle-left" style="font-size:30px;"></i></a>
               </button>
               </li>
             </ul>
@@ -68,38 +112,52 @@
       </div>
     </div>
 
+    <!--profile starts-->
     <div class="container" style="padding-top: 90px">
         <div class="row">
 
           <div class="col-lg-6 col-lg-offset-3">
           <div class="form-group">
             <label for="partyname" style="color:#000000; font-weight:700;">Party Name</label>
-            <p>TURNDOWNFORWHAT</p>
+            <p id="partyname">{{partyname}}</p>
+            
             <br>
-            <label for="partydetails" style="color:#000000; font-weight:700;">Details</label>
-            <p>Set in the distant future amidst a feudal interstellar society in which noble houses, in control of individual planets, owe allegiance to the Padishah Emperor, Dune tells the story of young Paul Atreides, whose noble family accepts the stewardship of the desert planet Arrakis. As this planet is the only source of the "spice" melange, the most important and valuable substance in the universe, control of Arrakis is a coveted — and dangerous — undertaking.</p>
 
-          <br>
+            <label for="hostname" style="color:#000000; font-weight:700;">Hostname</label>
+            <p id="hostname">{{hostname}}</p>
+
+            <br>
+
+            <label for="partydetails" style="color:#000000; font-weight:700;">Details</label>
+            <p id="description">{{description}}</p>
+
+            <br>
+
             <label for="partyaddress" style="color:#000000; font-weight:700;">Address</label>
-            <p>208 Power St, Providence</p>
-          <br> 
+            <p id="streetaddress">{{streetaddress}}</p>
+
+            <br> 
+
             <label for="partyname" style="color:#000000; font-weight:700;">When</label>
-            <p>4/11/14 10 PM
-            </p>
-            <p>4/12/14 1 AM
-            </p>
+            <p id="start">Start: {{start}}</p>
+            <p id="end">End: {{end}}</p>
+
             <br>
 
             <!--something like this -->
             <label for="activities" style="color:#000000; font-weight:700;">Recent activities</label>
             <ul id="activities" style="color:black;">
+                <!--
                 <li class="list-group-item">
                 <a href="/userprofile.html">pqhwan</a> created this party <p style="float:right;">12/5/2014 5:02PM</p>
                 </li>
                 <li class="list-group-item">
                 <a href="/userprofile.html">ahtin</a> upvoted this party <p style="float:right;"> 12/5/2014 6:32PM </p>
                 </li>
+                -->
             </ul>
+
+
       </div>
       
       <!--

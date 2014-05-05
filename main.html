@@ -37,7 +37,6 @@
     
     
     
-    
     <script type="text/javascript">
       function initialize() {
         var mapOptions = {
@@ -47,6 +46,7 @@
         var map = new google.maps.Map(document.getElementById("map-canvas"),
                 mapOptions);
 
+         
        function placePin(location, map, p_hash) {
             var marker = new google.maps.Marker({
                 position: location,
@@ -79,14 +79,56 @@
 	    var request = new XMLHttpRequest();
 	    request.open('POST', 'http://localhost:5000/nearby', true);
 	    //put received information on the map
-	    request.addEventListener('load', function(){
+        request.addEventListener('load', function(){
+
+            //retrieve and parse response
 		    var content = request.responseText;
-		    var data = JSON.parse(content);
-		    //looping through the list of parties that have been posted
-		    for(var i = 0; i < data.length; i++){
-			var partyLocation = new google.maps.LatLng(data[i].p_coord_x, data[i].p_coord_y);
-			placePin(partyLocation, map, data[i].p_hash);
-		    }
+            var data = JSON.parse(content);
+
+            for(var i = 0; i < data.length; i++){
+                //create and place location pin
+                var partyLocation = new google.maps.LatLng(data[i].p_coord_x, data[i].p_coord_y);
+                placePin(partyLocation, map, data[i].p_hash);
+
+                //create and append party list elements
+                var li =  '<li id="'+data[i].p_hash+'"class="list-group-item partyli">'+
+                        '<button type="button" class="btn btn-success btn-xs" style="width:150px; margin:0px;float:right;"><font size="3">COOL : '+data[i].p_upvotes+'</font></button>'+
+                '<a href="/party/'+data[i].p_hash+'"><font color="black">'+data[i].p_name+'</font></a>'+
+                    '</li>';
+
+                $('#parties').append(li);
+
+
+        }
+
+        //registers listener for upvote
+        $('.partyli button').click(function(e){
+            //make sure this is not liked already
+            $par = $(this).parent().eq(0);
+            //console.log($par.attr('id'));
+            if($par.attr('class').indexOf('upvoted') !== -1){
+                //already liked
+                console.log('already liked');
+                return;
+            }
+
+            //notify server of the upvote
+            var request = new XMLHttpRequest();
+            var id = $par.attr('id');
+            request.open('GET', '/party/upvote/'+id);
+            request.addEventListener('load',function(){
+                console.log('upvote message delivered');
+            });
+            request.send();
+
+            //change button status to upvoted and increment
+            var likeCount = parseInt($('#'+id+' button font').html().split(":")[1]); 
+            $('#'+id+' button').html('UPVOTED : '+(likeCount+1));
+
+            //mark upvoted (so it won't be upvoted again)
+            $par.addClass('upvoted');
+        });
+ 
 		    
 	    });
 	    request.send(null);       
@@ -95,7 +137,6 @@
        getLoc();
        getPartyLoc();
        
-//        placePin(new google.maps.LatLng( parseFloat(party[0]), parseFloat(party[1])), map);
 
       }
 
@@ -171,24 +212,8 @@
       </div>
 
         <div>
-            <ul style="width:100%; margin-bottom:30px; padding:0;">
-                <!-- example item-->
-                <li class="list-group-item">
-                <!--this button should be wired to make ajax query to GET /party/upvote/:partyid -->
-                <a href="#" style="float: right"><button type="button" class="btn btn-success btn-xs" style="width:150px; margin:0px;"><font size="3">COOL</font></button></a>
-                  <a href="./partydetails.html"><font color="black">TURNDOWNFORWHAT</font></a>
-                  </li>
-
-
-                <li class="list-group-item">
-                  <a href="#" style="float: right"><span class="badge"><i class="fa fa-sort"></i></span></a>
-                  <a href="#"><font color="black">Full Metal Jacket Viewing Party</font></a>
-                </li>
-                <li class="list-group-item">
-                  <a href="#" style="float: right"><span class="badge"><i class="fa fa-sort"></i></span></a>
-                  <a href="#"><font color="black">Drinking Alone @ the GCB</font></a>
-                </li>
-              </ul>
+            <ul id="parties" style="width:100%; margin-bottom:30px; padding:0;">
+            </ul>
         </div>
 
 
