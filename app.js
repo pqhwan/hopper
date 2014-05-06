@@ -64,7 +64,25 @@ app.get('/login',function(req,res){
 });
 
 app.get('/profile/:id',function(req,res){
-    res.sendfile('userprofile.html');
+    var userSelectQuery = 'select u_name,u_email from users where u_hash=$1';
+    var params = [req.params.id];
+
+    conn.query(userSelectQuery,params,function(err,data){
+        if(err) throw err;
+
+        if(!data.rowCount){
+            res.send('no such user <a href="/nearby">BACK</a>');
+            res.end();
+            return;
+        }
+
+        var row = data.rows[0];
+        var domain = row.u_email.slice(row.u_email.indexOf('@'));
+        res.render('userprofile.html',{
+            username:row.u_name,
+            domain:domain
+        });
+    });
 });
 
 app.get('/signup',function(req,res){
@@ -125,6 +143,25 @@ app.get('/party/activities/:id',function(req,res){
         if(!data.rowCount){
             res.send('[]');
             res.end();
+            return;
+        }
+
+        var rows = JSON.stringify(data.rows);
+        res.send(rows);
+        res.end();
+    });
+});
+
+app.get('/profile/activities/:id',function(req,res){
+    var findActivitiesByUser = 'select a_partyhash,a_partyname,a_verb,a_when from activities where a_userhash=$1';
+    var params = [req.params.id];
+    conn.query(findActivitiesByUser,params,function(err,data){
+        if(err) throw err;
+
+        if(!data.rowCount){
+            res.send('[]');
+            res.end();
+            return;
         }
 
         var rows = JSON.stringify(data.rows);
@@ -198,13 +235,30 @@ app.post('/nearby',function(req,res){
     //get user coordinate from req
     
     var selectPartyQuery = 'select p_coord_x, p_coord_y, p_name, p_description, p_start, p_end, p_upvotes, p_hash from parties';
-    conn.query(selectPartyQuery,function(err,data){
-        if(err) throw err;
-        //console.log(JSON.stringify(data.rows));
-        res.send(JSON.stringify(data.rows));
-        res.end();
+    conn.query(selectPartyQuery,function(err1, data1){
+        if(err1) throw err1;
+
+        var checkUpvotedQuery = "select a_partyhash from activities where a_userhash=$1 and a_verb=0";
+        var params = [req.signedCookies.u_hash];
+
+        conn.query(checkUpvotedQuery,params,function(err2,data2){
+            if(err2) throw err2;
+
+            //check upvoted (lol hack)
+            for(var i=0;i<data1.rowCount;i++){
+                for(var j=0;j<data2.rowCount;j++){
+                    if(data2.rows[j].a_partyhash === data1.rows[i].p_hash){
+                        data1.rows[i].upvoted = 1;
+                    } else {
+                        data1.rows[i].upvoted = 0;
+                    }
+                    
+                }
+            }
+            res.send(JSON.stringify(data1.rows));
+            res.end();
+        });
     });
- 
 });
 
 //party upvoted! 

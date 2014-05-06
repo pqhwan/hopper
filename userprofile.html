@@ -6,7 +6,7 @@
     <title>Hopper - The Best Parties Now</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/bootstrap.css" media="screen">
-    <link rel="stylesheet" href="/assets/css/bootswatch.min.css">
+    <!--<link rel="stylesheet" href="./assets/css/bootswatch.min.css">-->
     <link rel="stylesheet" href="/assets/css/font-awesome.css">
     <link rel="stylesheet" href="/assets/css/bootstrap-glyphicons.css">
 
@@ -27,93 +27,145 @@
        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-     })();
+   })();
+
+   function redundancyCheck(when){
+       var children = $('#activities').children();
+       for(i=0;i<children.length;i++){
+           if(when === children[i].id){
+                return true;
+           }
+       }
+       return false;
+   }
+
+    function displayActivities(activities){
+        for(i=0;i<activities.length;i++){
+            var item = activities[i];
+            console.log(item);
+            if(redundancyCheck(item.a_when)){
+                continue;
+            }
+            var action =  item.a_verb? 'created':'upvoted';
+
+
+            var li = '<li id="'+item.a_when+'" class="list-group-item">'+
+            'user '+action+' party: '+
+            '<a href="/party/'+item.a_partyhash+'">'+item.a_partyname+'</a>'+
+            '</li>'
+
+            /*
+            var li = '<li id="'+item.a_when+'" class="list-group-item">'+
+            '<a href="/profile/'+item.a_userhash+'">'+item.a_username+'</a> '+action+ ' a party '+
+            '<a href="/party/'+item
+                '<p style="float:right;">'+item.a_when+'</p></li>';
+                */
+
+            $('#activities').append(li);
+        }
+    }
+    function getActivities(){
+        var request = new XMLHttpRequest();
+        var id = document.URL.slice(document.URL.length-32);
+        request.open('GET','http://localhost:5000/profile/activities/'+id);
+        request.addEventListener('load',function(e){
+            if(request.status == 200){
+                displayActivities(JSON.parse(request.responseText));
+            }
+        },false)
+        request.send(null);
+
+    }
+
+   window.setInterval(getActivities, 10000);
+   window.addEventListener('load',getActivities, false);
+
 
     </script>
+    <style type="text/css">
+         .form-group p{
+          color: #000000;
+          font-size: 18px;
+         }
+    </style>
   </head>
-  <body>
-    <script src="/assets/js/bsa.js"></script>
+  <body style="background-color: #eeeeee">
+      <!--<script src="../assets/js/bsa.js"></script>-->
 
-    <div class="navbar navbar-default navbar-fixed-top">
+    <!--navbar-->
+    <div class="navbar navbar-default navbar-fixed-top" style="height: 61px;">
       <div class="container">
-        <div class="navbar-header">
-          <a href="/nearby" class="navbar-brand">HOPPER</a>
+        <div class="navbar-header" style="width:100%;">
 
-          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
-            <i class="fa fa-users"></i>
-          </button>
-          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
-            <i class="fa fa-gear"></i>
-          </button>
+          <div class="container" style="position:fixed; text-align:center; width:100%; display:inline-block; padding:0; margin:0; left:0;"><a href="/nearby" class="navbar-brand">HOPPER</a></div>
 
+          <div class="container" style="margin-right:-0px;">
+            <div class="container" style="float:left; width:50%; margin-left:-90px; ">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+              <a href="/nearby" style="color:#ffffff;"><i class="fa fa-arrow-circle-left" style="font-size:30px;"></i></a>
+            </button>
+            </div>
+          </div>
         </div>
 
           <div class="navbar-collapse collapse" id="navbar-main">
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-left">
               <li>
+
               <button type="button" class="btn btn-default btn-lg">
-                <i class="fa fa-gear"></i>
-              </button>
-              </li>
-              <li>
-                <button type="button" class="btn btn-default btn-lg">
-                <i class="fa fa-users"></i>
+                <a href="/nearby" style="color:#ffffff;"><i class="fa fa-arrow-circle-left" style="font-size:30px;"></i></a>
               </button>
               </li>
             </ul>
-          </div>
+          </div> 
       </div>
     </div>
 
-
-    <div class="container">
-
-      <div class="page-header" id="banner">
+    <!--profile starts-->
+    <div class="container" style="padding-top: 90px">
         <div class="row">
-          <div class="col-lg-6">
-          </br>
-            <p class="bs-component">
-              <button type="button" class="btn btn-primary btn-lg btn-block"><font size="4">Post a Party</font></button>
-            </p>
 
-          </div>
-        </div>
-        <div class="container">
-        </br>
-        <img src="/map.jpg" width="340">
-        </br></br>
-        </div>
-      </div>
+          <div class="col-lg-6 col-lg-offset-3">
+          <div class="form-group">
+            <label for="partyname" style="color:#000000; font-weight:700;">User name</label>
+            <p id="partyname">{{username}}</p>
+            
+            <br>
 
-        <div class="page-header">
-              <ul class="list-group">
-                <li class="list-group-item">
-                  <a href="#" style="float: right"><span class="badge"><i class="fa fa-sort"></i></span></a>
-                  <font color="black">Cras justo odio</font>
-                </li>
-                <li class="list-group-item">
-                  <a href="#" style="float: right"><span class="badge"><i class="fa fa-sort"></i></span></a>
-                  <font color="black">Dapibus ac facilisis in</font>
-                </li>
-                <li class="list-group-item">
-                  <a href="#" style="float: right"><span class="badge"><i class="fa fa-sort"></i></span></a>
-                  <font color="black">Morbi leo risus</font>
-                </li>
-              </ul>
-        </div>
+            <label for="hostname" style="color:#000000; font-weight:700;">Domain</label>
+            <p id="hostname">{{domain}}</p>
 
+            <br>
+
+            <!--something like this -->
+            <label for="activities" style="color:#000000; font-weight:700;">Recent activities</label>
+            <ul id="activities" style="color:black;">
+                <!--
+                <li class="list-group-item">
+                <a href="/userprofile.html">user</a> created party <a href="/party/partyid">"bday party"</a><p style="float:right;">12/5/2014 5:02PM</p>
+                </li>
+                -->
+           </ul>
 
 
       </div>
-
+      
+      <!--
+          <div style="width=100%; text-align:center;">
+          <p>
+              <a href="/nearby"><button type="button" class="btn btn-success btn-lg" style="width:150px; margin:10px;"><font size="3">COOL &raquo;</font></button></a>
+              <a href="/nearby"><button type="button" class="btn btn-danger btn-lg" style="width:150px; margin:10px;"><font size="3">LAME &raquo;</font></button></a>
+          </p>
+      </div>
+      -->
       </footer>
-
-
+      </div>
     </div>
+
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/assets/js/bootswatch.js"></script>
+    <!--<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../assets/js/bootswatch.js"></script>-->
   </body>
 </html>
